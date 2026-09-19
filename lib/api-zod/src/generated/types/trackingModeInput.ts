@@ -5,7 +5,8 @@
  * AeroNex GP simulation telemetry API
  * OpenAPI spec version: 0.1.0
  */
+import type { TrackingModeInputMode } from './trackingModeInputMode';
 
-export interface HealthStatus {
-  status: string;
+export interface TrackingModeInput {
+  mode: TrackingModeInputMode;
 }

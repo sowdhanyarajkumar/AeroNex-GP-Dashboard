@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AeroNex GP"
+description = "A simulation-first high-altitude anti-drone operations dashboard for monitoring environmental conditions, simulated target tracking, system health, adaptive control, alerts, and historical telemetry with future hardware integration in mind."
+version = "1.0.0"
+id = "artifacts/aeronex-gp"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21280
+
+[services.development]
+run = "pnpm --filter @workspace/aeronex-gp run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/aeronex-gp", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/aeronex-gp/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21280"
+BASE_PATH = "/"

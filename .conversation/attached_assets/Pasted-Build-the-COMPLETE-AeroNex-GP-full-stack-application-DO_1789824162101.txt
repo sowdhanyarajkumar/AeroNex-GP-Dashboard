@@ -1,0 +1,1037 @@
+Build the COMPLETE AeroNex GP full-stack application.
+
+DO NOT ONLY CREATE THE FRONTEND.
+DO NOT GIVE ME A TUTORIAL.
+ACTUALLY CREATE AND CONNECT ALL FILES, RUN THE APPLICATION, TEST IT, AND FIX ERRORS.
+
+==================================================
+PROJECT
+==================================================
+
+Name:
+AeroNex GP
+
+Title:
+HIGH-ALTITUDE ANTI-DRONE SYSTEM
+
+Purpose:
+Create a professional software prototype/dashboard for the SIH problem:
+
+"High Altitude Performance Optimization and Robust Design of Anti-Drone System"
+
+The system is an environment-aware anti-drone prototype focused on:
+
+1. Environmental monitoring
+2. Target detection/tracking visualization
+3. System health monitoring
+4. Environmental condition assessment
+5. Adaptive-control simulation
+6. Operator dashboard
+7. Data logging
+8. Future hardware integration
+
+IMPORTANT:
+
+The physical hardware prototype is NOT YET IMPLEMENTED.
+
+Therefore, the application must clearly operate in:
+
+SIMULATION MODE
+
+Do NOT claim:
+- real drone detection
+- real AI accuracy
+- real high-altitude field testing
+- real predictive-health validation
+- real drone neutralization
+- real hardware control
+
+All current sensor values, target data and health values are simulated.
+
+Design the architecture so real hardware can be connected later.
+
+==================================================
+TECH STACK
+==================================================
+
+Frontend:
+
+- React
+- Vite
+- JavaScript
+- HTML5
+- CSS3
+- Lucide React
+- Recharts
+
+Backend:
+
+- Node.js
+- Express.js
+
+Database:
+
+Use PostgreSQL if available in the Replit environment.
+
+Use an ORM/database library appropriate for Replit.
+
+If PostgreSQL is unavailable, create a clean database abstraction that can initially use SQLite without changing the frontend API.
+
+API:
+
+REST API.
+
+Optional WebSocket support for live dashboard updates.
+
+Deployment:
+
+Replit deployment.
+
+Keep the project deployable as a single full-stack application.
+
+==================================================
+ARCHITECTURE
+==================================================
+
+Create this architecture:
+
+                    ┌─────────────────────┐
+                    │   AeroNex Frontend  │
+                    │       React         │
+                    └──────────┬──────────┘
+                               │
+                         REST / WebSocket
+                               │
+                    ┌──────────▼──────────┐
+                    │   Node.js Backend   │
+                    │      Express        │
+                    └──────────┬──────────┘
+                               │
+               ┌───────────────┼────────────────┐
+               │               │                │
+        ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
+        │ Simulation  │ │ Health      │ │ Environment │
+        │ Engine      │ │ Engine      │ │ Engine      │
+        └─────────────┘ └─────────────┘ └─────────────┘
+                               │
+                         ┌─────▼─────┐
+                         │ Database  │
+                         └───────────┘
+
+Future hardware:
+
+Arduino Mega
+ESP32-CAM
+BMP280
+DHT11
+LM35
+ADXL335
+HMC5883
+NEO-6M
+PCA9685
+Servo / Pan-Tilt
+
+These should NOT be directly controlled by the web app yet.
+
+Create interfaces/API endpoints so they can be integrated later.
+
+==================================================
+FOLDER STRUCTURE
+==================================================
+
+Create a clean structure similar to:
+
+/
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Header.jsx
+│   │   │   ├── EnvironmentPanel.jsx
+│   │   │   ├── SensorCard.jsx
+│   │   │   ├── TrackingPanel.jsx
+│   │   │   ├── TargetOverlay.jsx
+│   │   │   ├── PredictiveHealth.jsx
+│   │   │   ├── HealthChart.jsx
+│   │   │   ├── AdaptiveControl.jsx
+│   │   │   ├── ControlPanel.jsx
+│   │   │   ├── VirtualJoystick.jsx
+│   │   │   ├── AlertPanel.jsx
+│   │   │   └── StatusBadge.jsx
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── styles.css
+│   └── package.json
+│
+├── server/
+│   ├── routes/
+│   │   ├── environment.js
+│   │   ├── tracking.js
+│   │   ├── health.js
+│   │   ├── system.js
+│   │   └── alerts.js
+│   ├── services/
+│   │   ├── simulationEngine.js
+│   │   ├── healthEngine.js
+│   │   └── environmentEngine.js
+│   ├── database/
+│   │   ├── db.js
+│   │   └── schema.js
+│   └── server.js
+│
+├── shared/
+│   └── constants.js
+│
+├── package.json
+├── README.md
+└── .env.example
+
+==================================================
+FRONTEND UI
+==================================================
+
+Reproduce the provided AeroNex dashboard style.
+
+Dark aerospace command-center interface.
+
+Main colors:
+
+Dark navy / black background
+Blue-gray borders
+Cyan accents
+Green normal status
+Orange warning
+Red critical
+
+Compact technical typography.
+
+Desktop-first.
+
+Target resolution:
+
+1920 × 1080
+
+Also support:
+
+1600 × 900
+1366 × 768
+Tablet
+Mobile
+
+==================================================
+HEADER
+==================================================
+
+Left:
+
+[AG]
+
+AeroNex GP
+AEROSPACE SYSTEMS
+
+Center:
+
+HIGH-ALTITUDE ANTI-DRONE SYSTEM
+
+Right:
+
+● ONLINE
+
+[ ⚠ SIMULATION MODE ]
+
+UPTIME 00:23:27
+
+LIVE CLOCK
+
+==================================================
+ENVIRONMENT MONITORING
+==================================================
+
+Show:
+
+TEMPERATURE
+-23.8 °C
+NORMAL
+
+ATM. PRESSURE
+551.2 hPa
+NORMAL
+
+HUMIDITY
+31.8 %
+NORMAL
+
+VIBRATION
+0.186 g
+NORMAL
+
+ENV. CONDITION
+NOMINAL
+
+These values must come from the backend API/WebSocket.
+
+Do NOT hardcode the displayed values only in React.
+
+Backend simulation engine generates the values.
+
+Frontend consumes them through API/WebSocket.
+
+==================================================
+TARGET DETECTION & TRACKING
+==================================================
+
+Large central tracking viewport.
+
+Show:
+
+TGT POS: 515, 216
+CONF: 96.8%
+ERR: 3.4px
+
+Target:
+simulated drone silhouette
+
+Tracking box.
+
+Crosshair.
+
+Grid.
+
+Scanning effect.
+
+Bottom:
+
+BRG: 207.7°
+ELV: 47.6°
+RNG: 966m
+
+STAB: ACTIVE
+
+Target position must come from backend simulation.
+
+Backend continuously updates:
+
+targetX
+targetY
+confidence
+trackingError
+bearing
+elevation
+range
+trackingStatus
+
+Frontend receives updates.
+
+==================================================
+PREDICTIVE HEALTH
+==================================================
+
+Panel:
+
+CPSO-UKF PREDICTIVE HEALTH
+
+SENSE → ESTIMATE → PREDICT
+
+Show:
+
+CPSO-UKF STATUS
+ACTIVE
+
+ESTIMATED HEALTH
+87.6%
+
+PREDICTED HEALTH
+88.2%
+
+THERMAL STATE
+NOMINAL
+
+DEGRADATION RATE
+0.00%/s
+
+RISK LEVEL
+LOW
+
+IMPORTANT:
+
+These are simulated values.
+
+Display:
+
+SIMULATION DATA
+
+Create a historical health chart using backend data.
+
+==================================================
+ADAPTIVE CONTROL
+==================================================
+
+Show:
+
+ENVIRONMENT → IMPACT → ADAPT
+
+Environmental State:
+NOMINAL
+
+Operating Mode:
+STANDARD
+
+Adaptive Control:
+ACTIVE
+
+Active Compensation:
+
+All systems nominal — no compensation required
+
+System Recommendation:
+
+All systems nominal.
+No adjustments required.
+
+The backend should generate recommendations based on simulated environment status.
+
+==================================================
+CONTROL PANEL
+==================================================
+
+Buttons:
+
+START SIMULATION
+PAUSE SIMULATION
+RESET SIMULATION
+
+Tracking:
+
+AUTO
+MANUAL
+
+Camera:
+
+PAN: 0°
+TILT: 0°
+
+Virtual joystick.
+
+Important:
+
+Joystick only changes simulated values.
+
+It must NOT claim to control a physical servo.
+
+==================================================
+BACKEND API
+==================================================
+
+Create these endpoints.
+
+GET:
+
+/api/system/status
+
+Returns:
+
+{
+  online: true,
+  simulationMode: true,
+  uptime: "...",
+  timestamp: "..."
+}
+
+GET:
+
+/api/environment
+
+Returns:
+
+{
+  temperature,
+  pressure,
+  humidity,
+  vibration,
+  condition
+}
+
+GET:
+
+/api/tracking
+
+Returns:
+
+{
+  targetDetected,
+  targetX,
+  targetY,
+  confidence,
+  trackingError,
+  bearing,
+  elevation,
+  range,
+  status
+}
+
+GET:
+
+/api/health
+
+Returns:
+
+{
+  estimatedHealth,
+  predictedHealth,
+  degradationRate,
+  thermalState,
+  riskLevel
+}
+
+GET:
+
+/api/control
+
+Returns:
+
+{
+  environmentalState,
+  operatingMode,
+  adaptiveControl,
+  recommendation
+}
+
+GET:
+
+/api/alerts
+
+Returns current alerts.
+
+GET:
+
+/api/history/environment
+
+Returns historical environment data.
+
+GET:
+
+/api/history/health
+
+Returns historical health data.
+
+POST:
+
+/api/simulation/start
+
+POST:
+
+/api/simulation/pause
+
+POST:
+
+/api/simulation/reset
+
+POST:
+
+/api/control/tracking
+
+Body:
+
+{
+  mode: "AUTO"
+}
+
+POST:
+
+/api/control/camera
+
+Body:
+
+{
+  pan,
+  tilt
+}
+
+==================================================
+WEBSOCKET
+==================================================
+
+If practical, implement WebSocket support.
+
+Endpoint:
+
+/ws
+
+Send live updates such as:
+
+environment
+tracking
+health
+control
+alerts
+
+Frontend should update without requiring page refresh.
+
+If WebSocket introduces instability, use polling as a fallback.
+
+==================================================
+SIMULATION ENGINE
+==================================================
+
+Create a backend simulation engine.
+
+It should generate realistic slowly changing values.
+
+Environment:
+
+temperature
+pressure
+humidity
+vibration
+
+Tracking:
+
+targetX
+targetY
+confidence
+trackingError
+bearing
+elevation
+range
+
+Health:
+
+estimatedHealth
+predictedHealth
+degradationRate
+thermalState
+riskLevel
+
+Control:
+
+environmentalState
+operatingMode
+adaptiveControl
+recommendation
+
+Do NOT use random extreme values.
+
+Use smooth changes.
+
+Allow environmental states:
+
+NOMINAL
+CAUTION
+WARNING
+
+When conditions change:
+
+- status changes
+- alert generated
+- health values respond
+- recommendation changes
+
+==================================================
+DATABASE
+==================================================
+
+Store simulation history.
+
+Tables:
+
+environment_readings
+
+Fields:
+
+id
+timestamp
+temperature
+pressure
+humidity
+vibration
+condition
+
+tracking_readings
+
+Fields:
+
+id
+timestamp
+target_x
+target_y
+confidence
+tracking_error
+bearing
+elevation
+range
+status
+
+health_readings
+
+Fields:
+
+id
+timestamp
+estimated_health
+predicted_health
+degradation_rate
+thermal_state
+risk_level
+
+alerts
+
+Fields:
+
+id
+timestamp
+type
+severity
+message
+acknowledged
+
+system_events
+
+Fields:
+
+id
+timestamp
+event_type
+message
+
+Keep database access modular.
+
+==================================================
+DASHBOARD HISTORY
+==================================================
+
+Add a "History / Analytics" section.
+
+Display:
+
+Environment history
+Health history
+Tracking history
+Alerts
+
+Use charts.
+
+Do not fabricate real historical experiments.
+
+Label:
+
+SIMULATED HISTORY
+
+==================================================
+ALERT ENGINE
+==================================================
+
+Create threshold-based alerts.
+
+Examples:
+
+LOW TEMPERATURE
+HIGH VIBRATION
+PRESSURE CHANGE
+ENVIRONMENT CAUTION
+TRACKING LOST
+LOW CONFIDENCE
+SYSTEM NOMINAL
+
+Severity:
+
+INFO
+WARNING
+CRITICAL
+
+Dashboard should display current alerts.
+
+==================================================
+HARDWARE INTEGRATION READY
+==================================================
+
+Create an abstraction layer.
+
+Example:
+
+SensorProvider
+
+SimulationSensorProvider
+
+Future:
+
+ArduinoSensorProvider
+
+CameraProvider
+
+SimulationCameraProvider
+
+Future:
+
+ESP32CameraProvider
+
+TrackingProvider
+
+SimulationTrackingProvider
+
+Future:
+
+ComputerVisionTrackingProvider
+
+ServoProvider
+
+SimulationServoProvider
+
+Future:
+
+PCA9685ServoProvider
+
+IMPORTANT:
+
+Only implement simulation providers now.
+
+==================================================
+FUTURE HARDWARE MAPPING
+==================================================
+
+Document this clearly:
+
+Arduino Mega:
+environmental/sensor integration
+
+ESP32-CAM:
+camera stream
+
+Raspberry Pi:
+future computer vision processing
+
+BMP280:
+pressure + temperature
+
+DHT11:
+temperature + humidity
+
+LM35:
+temperature
+
+ADXL335:
+vibration/acceleration
+
+HMC5883:
+orientation/heading
+
+NEO-6M:
+GPS
+
+PCA9685:
+servo control
+
+Servo:
+pan/tilt
+
+The website must NOT pretend these devices are currently connected.
+
+==================================================
+SECURITY
+==================================================
+
+Use environment variables.
+
+Create:
+
+.env.example
+
+Do not expose database credentials.
+
+Validate API inputs.
+
+Use CORS correctly.
+
+Handle API errors.
+
+Never put secrets into frontend code.
+
+==================================================
+ERROR HANDLING
+==================================================
+
+If backend is unavailable:
+
+Frontend should show:
+
+BACKEND CONNECTION LOST
+
+and attempt reconnect.
+
+Do not crash the dashboard.
+
+If WebSocket fails:
+
+Automatically fall back to REST polling.
+
+==================================================
+PERFORMANCE
+==================================================
+
+Keep dashboard smooth.
+
+Do not update React state unnecessarily.
+
+Clean up intervals and WebSocket connections.
+
+Avoid memory leaks.
+
+Limit database history writes to a sensible interval.
+
+==================================================
+SIH PRESENTATION MODE
+==================================================
+
+Add a "Demo Mode".
+
+Demo Mode should allow:
+
+START
+PAUSE
+RESET
+
+and provide stable predictable simulation behaviour.
+
+Add a visible:
+
+SIMULATION MODE
+
+badge.
+
+Add an About / System Information section:
+
+AeroNex GP
+High-Altitude Anti-Drone System
+
+Prototype software dashboard.
+
+Focus:
+Environmental awareness
+Target tracking
+System health
+High-altitude operational monitoring
+
+==================================================
+NO FALSE CLAIMS
+==================================================
+
+Do NOT display:
+
+99% accuracy
+95% detection rate
+real-world deployment
+field tested
+combat ready
+military certified
+real-time drone interception
+successful neutralization
+
+unless actual data is later supplied.
+
+==================================================
+README
+==================================================
+
+Create a complete README containing:
+
+Project overview
+Architecture
+Frontend setup
+Backend setup
+Database setup
+Environment variables
+API documentation
+WebSocket documentation
+Simulation architecture
+Hardware integration roadmap
+Development commands
+Production deployment instructions
+
+==================================================
+RUNNING
+==================================================
+
+Make these commands work:
+
+npm install
+
+npm run dev
+
+npm run build
+
+npm start
+
+The frontend and backend must work together.
+
+Prefer a single command for Replit:
+
+npm run dev
+
+or:
+
+npm run start
+
+Configure the server so it can serve the built React frontend in production.
+
+==================================================
+REPLIT DEPLOYMENT
+==================================================
+
+Prepare the application for Replit deployment.
+
+Use environment variables.
+
+Use PORT provided by the environment.
+
+Server must bind to:
+
+0.0.0.0
+
+Do not hardcode localhost for production.
+
+The final application must be accessible from the Replit public URL.
+
+==================================================
+FINAL TEST
+==================================================
+
+Before finishing:
+
+1. Install dependencies.
+2. Start backend.
+3. Start frontend.
+4. Verify API endpoints.
+5. Verify database connection.
+6. Verify simulation engine.
+7. Verify live dashboard updates.
+8. Verify start/pause/reset.
+9. Verify charts.
+10. Verify alerts.
+11. Verify responsive layout.
+12. Run production build.
+13. Fix ALL errors.
+14. Check browser console for errors.
+15. Check server logs.
+16. Make sure there are no broken imports.
+17. Make sure no API request returns 404 unexpectedly.
+
+==================================================
+FINAL OUTPUT
+==================================================
+
+After implementation, give me:
+
+1. What was built
+2. Frontend architecture
+3. Backend architecture
+4. Database architecture
+5. API endpoints
+6. How simulation works
+7. How future hardware can connect
+8. How to run locally
+9. How to deploy on Replit
+10. The actual Replit deployment URL AFTER successful deployment
+
+DO NOT GIVE ME A FAKE URL.
+
+If deployment requires an action from me, clearly tell me the exact action required.
+
+START BUILDING THE FULL APPLICATION NOW.

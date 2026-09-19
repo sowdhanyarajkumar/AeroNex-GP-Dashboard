@@ -3,13 +3,17 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AeroNex GP simulation telemetry API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: system
+  - name: telemetry
+  - name: simulation
+  - name: control
 paths:
   /healthz:
     get:
@@ -24,7 +28,215 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /system/status:
+    get:
+      operationId: getSystemStatus
+      tags: [system]
+      summary: Get current system status
+      responses:
+        "200":
+          description: Current system status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SystemStatus"
+  /environment:
+    get:
+      operationId: getEnvironment
+      tags: [telemetry]
+      summary: Get current simulated environment telemetry
+      responses:
+        "200":
+          description: Current environment telemetry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnvironmentReading"
+  /tracking:
+    get:
+      operationId: getTracking
+      tags: [telemetry]
+      summary: Get current simulated tracking telemetry
+      responses:
+        "200":
+          description: Current tracking telemetry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackingReading"
+  /health:
+    get:
+      operationId: getPredictiveHealth
+      tags: [telemetry]
+      summary: Get current simulated predictive health telemetry
+      responses:
+        "200":
+          description: Current predictive health telemetry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthReading"
+  /control:
+    get:
+      operationId: getControlState
+      tags: [control]
+      summary: Get adaptive control state
+      responses:
+        "200":
+          description: Current adaptive control state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ControlState"
+  /alerts:
+    get:
+      operationId: getAlerts
+      tags: [telemetry]
+      summary: Get current simulation alerts
+      responses:
+        "200":
+          description: Current alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+  /history/environment:
+    get:
+      operationId: getEnvironmentHistory
+      tags: [telemetry]
+      summary: Get simulated environment history
+      parameters:
+        - $ref: "#/components/parameters/HistoryLimit"
+      responses:
+        "200":
+          description: Recent environment readings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EnvironmentReading"
+  /history/health:
+    get:
+      operationId: getHealthHistory
+      tags: [telemetry]
+      summary: Get simulated health history
+      parameters:
+        - $ref: "#/components/parameters/HistoryLimit"
+      responses:
+        "200":
+          description: Recent health readings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HealthReading"
+  /history/tracking:
+    get:
+      operationId: getTrackingHistory
+      tags: [telemetry]
+      summary: Get simulated tracking history
+      parameters:
+        - $ref: "#/components/parameters/HistoryLimit"
+      responses:
+        "200":
+          description: Recent tracking readings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrackingReading"
+  /simulation/start:
+    post:
+      operationId: startSimulation
+      tags: [simulation]
+      summary: Start the simulation loop
+      responses:
+        "200":
+          description: Simulation state after starting
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationState"
+  /simulation/pause:
+    post:
+      operationId: pauseSimulation
+      tags: [simulation]
+      summary: Pause the simulation loop
+      responses:
+        "200":
+          description: Simulation state after pausing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationState"
+  /simulation/reset:
+    post:
+      operationId: resetSimulation
+      tags: [simulation]
+      summary: Reset simulation telemetry to its baseline
+      responses:
+        "200":
+          description: Simulation state after reset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationState"
+  /control/tracking:
+    post:
+      operationId: setTrackingMode
+      tags: [control]
+      summary: Set simulated tracking mode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrackingModeInput"
+      responses:
+        "200":
+          description: Updated control state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ControlState"
+        "400":
+          description: Invalid tracking mode
+  /control/camera:
+    post:
+      operationId: setCameraPosition
+      tags: [control]
+      summary: Set simulated camera pan and tilt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CameraPositionInput"
+      responses:
+        "200":
+          description: Updated camera position
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CameraPosition"
+        "400":
+          description: Invalid camera position
 components:
+  parameters:
+    HistoryLimit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 120
+        default: 48
   schemas:
     HealthStatus:
       type: object
@@ -33,4 +245,107 @@ components:
           type: string
       required:
         - status
+    SystemStatus:
+      type: object
+      required: [online, simulationMode, simulationRunning, uptime, timestamp]
+      properties:
+        online: { type: boolean }
+        simulationMode: { type: boolean }
+        simulationRunning: { type: boolean }
+        uptime: { type: string }
+        timestamp: { type: string, format: date-time }
+    EnvironmentReading:
+      type: object
+      required: [timestamp, temperature, pressure, humidity, vibration, condition]
+      properties:
+        timestamp: { type: string, format: date-time }
+        temperature: { type: number }
+        pressure: { type: number }
+        humidity: { type: number }
+        vibration: { type: number }
+        condition:
+          type: string
+          enum: [NOMINAL, CAUTION, WARNING]
+    TrackingReading:
+      type: object
+      required: [timestamp, targetDetected, targetX, targetY, confidence, trackingError, bearing, elevation, range, status]
+      properties:
+        timestamp: { type: string, format: date-time }
+        targetDetected: { type: boolean }
+        targetX: { type: number }
+        targetY: { type: number }
+        confidence: { type: number }
+        trackingError: { type: number }
+        bearing: { type: number }
+        elevation: { type: number }
+        range: { type: number }
+        status:
+          type: string
+          enum: [STABLE, SEARCHING, LOST]
+    HealthReading:
+      type: object
+      required: [timestamp, estimatedHealth, predictedHealth, degradationRate, thermalState, riskLevel]
+      properties:
+        timestamp: { type: string, format: date-time }
+        estimatedHealth: { type: number }
+        predictedHealth: { type: number }
+        degradationRate: { type: number }
+        thermalState:
+          type: string
+          enum: [NOMINAL, ELEVATED, CRITICAL]
+        riskLevel:
+          type: string
+          enum: [LOW, MEDIUM, HIGH]
+    ControlState:
+      type: object
+      required: [environmentalState, operatingMode, adaptiveControl, recommendation, compensation, pan, tilt]
+      properties:
+        environmentalState:
+          type: string
+          enum: [NOMINAL, CAUTION, WARNING]
+        operatingMode:
+          type: string
+          enum: [STANDARD, COMPENSATED, SAFE]
+        adaptiveControl: { type: boolean }
+        recommendation: { type: string }
+        compensation: { type: string }
+        pan: { type: number }
+        tilt: { type: number }
+    Alert:
+      type: object
+      required: [id, timestamp, type, severity, message, acknowledged]
+      properties:
+        id: { type: string }
+        timestamp: { type: string, format: date-time }
+        type: { type: string }
+        severity:
+          type: string
+          enum: [INFO, WARNING, CRITICAL]
+        message: { type: string }
+        acknowledged: { type: boolean }
+    SimulationState:
+      type: object
+      required: [simulationRunning, timestamp]
+      properties:
+        simulationRunning: { type: boolean }
+        timestamp: { type: string, format: date-time }
+    TrackingModeInput:
+      type: object
+      required: [mode]
+      properties:
+        mode:
+          type: string
+          enum: [AUTO, MANUAL]
+    CameraPositionInput:
+      type: object
+      required: [pan, tilt]
+      properties:
+        pan: { type: number, minimum: -90, maximum: 90 }
+        tilt: { type: number, minimum: -45, maximum: 45 }
+    CameraPosition:
+      type: object
+      required: [pan, tilt]
+      properties:
+        pan: { type: number }
+        tilt: { type: number }
 
