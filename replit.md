@@ -1,10 +1,11 @@
-# [Project name]
+# AeroNex GP
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A simulation-first high-altitude anti-drone operations dashboard for environmental awareness, synthetic target tracking, predictive health, adaptive control, and history.
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/aeronex-gp run dev` — run the React dashboard
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -22,23 +23,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/aeronex-gp/src/pages/dashboard.tsx` — live command dashboard
+- `artifacts/aeronex-gp/src/pages/about.tsx` — system brief and hardware boundary
+- `artifacts/api-server/src/services/simulationEngine.ts` — smooth simulation state and persistence
+- `artifacts/api-server/src/routes/` — REST endpoint implementations
+- `lib/api-spec/openapi.yaml` — API contract source of truth
+- `lib/db/src/schema/aeronex.ts` — PostgreSQL/Drizzle telemetry schema
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The physical system boundary is explicit: all current telemetry and control values are simulated.
+- REST polling is used for live updates so the dashboard remains stable through WebSocket/proxy changes.
+- OpenAPI is the contract source of truth; generated React Query and Zod files are consumed by the app and server.
+- PostgreSQL stores periodic simulation snapshots while the engine keeps a bounded in-memory window for graceful fallback.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Operators can watch environmental conditions, synthetic tracking, predictive health, control recommendations, alerts, and simulated history from one responsive console. Demo controls start, pause, and reset the simulation.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+No additional preferences recorded.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run API codegen after changing `lib/api-spec/openapi.yaml`.
+- Run `pnpm run typecheck:libs` after changing a `lib/*` package before checking artifacts.
+- Do not present simulation values as real detection, hardware control, or field validation.
 
 ## Pointers
 

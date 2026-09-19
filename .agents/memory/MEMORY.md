@@ -1,0 +1,1 @@
+- [Generated client TypeScript configuration](generated-client-tsconfig.md) — Orval's fetch client needs `dom.iterable` for `Headers.entries()` typechecks.
